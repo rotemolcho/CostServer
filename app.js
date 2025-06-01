@@ -14,6 +14,9 @@ const costsRouter = require('./routes/costsRoutes');
 const aboutRouter = require('./routes/aboutRoutes');
 
 const app = express();
+app.get('/', (req, res) => {
+    res.send('👋 CostServer is live and routing!');
+});
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
