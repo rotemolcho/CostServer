@@ -1,0 +1,100 @@
+#!/usr/bin/env node
+
+/**
+ * @file bin/www
+ * @description
+ * Entry point for the CostServer application. Connects to MongoDB,
+ * creates and starts the HTTP server, and sets up event handlers.
+ */
+
+/**
+ * Module dependencies.
+ */
+const app = require('../app');
+const debug = require('debug')('costserver:server');
+const http = require('http');
+const { connectDB, disconnectDB } = require('../db');
+
+/**
+ * Retrieve and normalize the port from environment.
+ * @type {string|number|boolean}
+ */
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Start MongoDB connection then create and start the HTTP server.
+ * @async
+ */
+connectDB()
+    .then(() => {
+        console.log('✅ MongoDB connected');
+        /** @type {http.Server} */
+        const server = http.createServer(app);
+        server.listen(port);
+        server.on('error', onError);
+        server.on('listening', onListening);
+        console.log('Server running on port ' + port);
+    })
+    .catch(err => {
+        console.error('Mongo connection error:', err);
+        process.exit(1);
+    });
+
+/**
+ * Normalize a port into a number, string, or false.
+ * @param {string|number} val - Port value from environment or config.
+ * @returns {number|string|boolean} A valid port number, named pipe, or false if invalid.
+ */
+function normalizePort(val) {
+    const portNum = parseInt(val, 10);
+    if (isNaN(portNum)) {
+        // named pipe
+        return val;
+    }
+    if (portNum >= 0) {
+        // port number
+        return portNum;
+    }
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ * @async
+ * @param {Error & { syscall?: string, code?: string }} error - Error object.
+ * @throws Will re-throw error for unexpected cases.
+ */
+async function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+    const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            await disconnectDB();
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            await disconnectDB();
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ * @returns {void}
+ */
+function onListening() {
+    const addr = this.address ? this.address() : null;
+    const bind = addr && typeof addr === 'object'
+        ? 'port ' + addr.port
+        : 'pipe ' + addr;
+    debug('Listening on ' + bind);
+}
