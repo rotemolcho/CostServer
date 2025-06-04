@@ -85,13 +85,3 @@ npm test
 - Deploy to any Node.js hosting (e.g., Heroku, AWS, DigitalOcean)
 - Ensure `MONGO_URI` is set in production environment
 
-## Submission & PDF Cover Page
-- **Video Demo**: record a ≤60s demo showing app, Discord, Jira usage; upload as unlisted YouTube
-- **ZIP**: include source code (delete `node_modules`), tests, `.env.example`
-- **PDF**: include all code files, with:
-  1. Team manager: First + Last name
-  2. Team members: First Last – ID – Phone – Email
-  3. Clickable link to the demo video
-
----
-*Generated according to project submission guidelines.*
