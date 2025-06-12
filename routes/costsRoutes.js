@@ -110,12 +110,12 @@ router.post('/add', async (req, res) => {
  * // GET /report?userid=1&year=2025&month=5
  */
 router.get('/report', async (req, res) => {
-    const {userid, year, month} = req.query;
-    if (!userid || !year || !month) {
-        return res.status(400).json({error: 'userid, year, month are required'});
+    const {id, year, month} = req.query;
+    if (!id || !year || !month) {
+        return res.status(400).json({error: 'id, year, month are required'});
     }
 
-    const finalID = Number(userid);
+    const finalID = Number(id);
     const finalYear = Number(year);
     const finalMonth = Number(month);
     const currentYear = new Date().getFullYear();

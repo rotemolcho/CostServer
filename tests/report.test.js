@@ -25,7 +25,7 @@ async function seedUserAndCosts() {
 }
 
 // Test suite for GET /api/report
-describe('GET /api/report?userid=&year=&month= (unit test)', () => {
+describe('GET /api/report?id=&year=&month= (unit test)', () => {
     beforeEach(async () => {
         await seedUserAndCosts();
     });
@@ -39,7 +39,7 @@ describe('GET /api/report?userid=&year=&month= (unit test)', () => {
     it('returns monthly costs grouped by category', async () => {
         const res = await request
             .get('/api/report')
-            .query({userid: 12341234, year: 2025, month: 3});
+            .query({id: 12341234, year: 2025, month: 3});
 
         expect(res.status).toBe(200);
         expect(res.body).toMatchObject({userid: 12341234, year: 2025, month: 3});
@@ -58,7 +58,7 @@ describe('GET /api/report?userid=&year=&month= (unit test)', () => {
     it('returns 404 if the user is missing', async () => {
         const res = await request
             .get('/api/report')
-            .query({userid: 999999, year: 2025, month: 3});
+            .query({id: 999999, year: 2025, month: 3});
 
         expect(res.status).toBe(404);
         expect(res.body.error).toMatch(/user not found/i);
@@ -68,22 +68,22 @@ describe('GET /api/report?userid=&year=&month= (unit test)', () => {
     it('returns 400 on partial query params', async () => {
         const res = await request
             .get('/api/report')
-            .query({userid: 12341234, month: 3});
+            .query({id: 12341234, month: 3});
 
         expect(res.status).toBe(400);
-        expect(res.body.error).toMatch(/userid, year, month are required/i);
+        expect(res.body.error).toMatch(/id, year, month are required/i);
     });
 
     // invalid year triggers 400
     it('returns 400 if year is invalid', async () => {
-        const res = await request.get('/api/report').query({userid: 12341234, year: -2, month: 3});
+        const res = await request.get('/api/report').query({id: 12341234, year: -2, month: 3});
         expect(res.status).toBe(400);
         expect(res.body.error).toMatch(/invalid parameters/i);
     });
 
     // invalid month triggers 400
     it('returns 400 if month is invalid', async () => {
-        const res = await request.get('/api/report').query({userid: 12341234, year: 2025, month: 13});
+        const res = await request.get('/api/report').query({id: 12341234, year: 2025, month: 13});
         expect(res.status).toBe(400);
         expect(res.body.error).toMatch(/invalid parameters/i);
     });
@@ -98,7 +98,7 @@ describe('GET /api/report?userid=&year=&month= (unit test)', () => {
             lastUpdated: new Date()
         });
 
-        const res = await request.get('/api/report').query({userid: 12341234, year: 2025, month: 3});
+        const res = await request.get('/api/report').query({id: 12341234, year: 2025, month: 3});
         expect(res.status).toBe(200);
         expect(res.body.costs).toEqual(expect.arrayContaining([expect.objectContaining({food: expect.any(Array)})]));
     });

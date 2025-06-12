@@ -36,7 +36,7 @@ describe('GET /api/users/:id (unit test)', () => {
     it('returns 200 and the correct user data', async () => {
         const res = await request.get('/api/users/12341234');
         expect(res.status).toBe(200);
-        expect(res.body.user).toMatchObject({
+        expect(res.body).toMatchObject({
             id: 12341234, first_name: 'mosh', last_name: 'israeli', total: 40,
         });
     });
